@@ -33,7 +33,7 @@ class Clickatell
         }
 
         // Load the config
-        $config = include Bundle::path('clickatell') . 'config/clickatell.php';
+        $config = Config::get('clickatell::clickatell');
 
         $uri = array(
             'api_id=' . $config['api_id'],
