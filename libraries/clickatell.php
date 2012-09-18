@@ -33,33 +33,27 @@ class Clickatell
         }
 
         // Load the config
-        include Bundle::path('clickatell') . 'config/clickatell.php';
+        $config = include Bundle::path('clickatell') . 'config/clickatell.php';
 
-        // Authentication Call
-        $auth = file($clickatell['base_url'] . '/http/auth?api_id=' . $clickatell['api_id'] . '&user=' . $clickatell['user'] . '&password=' . $clickatell['password']);
-        $auth_ex = explode(":", $auth[0]);
+        $uri = array(
+            'api_id=' . $config['api_id'],
+            'user=' . $config['user'],
+            'password=' . $config['password'],
+            'to=' . implode(',', self::$to),
+            'text=' . str_replace(' ', '+', self::$message)
+        );
 
-        if ($auth_ex[0] == "OK") {
-            // Authentication was successful
-            $uri = array(
-                'session_id=' . trim($auth_ex[1]),
-                'to=' . implode(",", self::$to),
-                'text=' . str_replace(' ', '+', self::$message)
-            );
+        $url = $config['base_url'] . '/http/sendmsg?' . implode('&', $uri);
 
-            $url = $clickatell['base_url'] . '/http/sendmsg?' . implode("&", $uri);
+        $request = file($url);
+        $reply = explode(':', $request[0]);
 
-            $request = file($url);
-            $request_ex = explode(":", $request[1]);
-
-            if ($request_ex[0] == "ID") {
-                return 'Message Sent #' . $request_ex[1];
-            } else {
-                return "Sending Message Failed";
-            }
-        } else {
-            // Authentication failed
-            return '<b>Authentication Failed</b> - ' . $auth_ex[1];
+        if ($reply[0] == "ID") {
+            // The message has been sent
+            return array('status' => 'success', 'id' => $reply[1]);
+        } else if ($reply[0] == "ERR") {
+            // Something went wrong
+            return array('status' => 'failed', 'message' => $reply[1]);
         }
 
     }
