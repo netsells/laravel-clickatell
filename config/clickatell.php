@@ -1,7 +1,9 @@
 <?php
 
-$clickatell['user'] = "user";
-$clickatell['password'] = "password";
-$clickatell['api_id'] = "api_id";
+return array(
+    'user' => 'user',
+    'password' => 'password',
+    'api_id' => 'app_id',
 
-$clickatell['base_url'] = "https://api.clickatell.com";
+    'base_url' => 'https://api.clickatell.com' // No trailing slash
+);
