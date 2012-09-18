@@ -16,7 +16,7 @@ Send the same message to multiple numbers
 
     $message = new Clickatell;
 
-    $status = $message->to(array('00000000000', '11111111111', '22222222222')
+    $status = $message->to(array('00000000000', '11111111111', '22222222222'))
                     ->message('Hello world!')
                     ->send();
 
